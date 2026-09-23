@@ -51,3 +51,147 @@ test("generates a unique ID for each ticket", () => {
 
     expect(ticket1.id).not.toBe(ticket2.id);
 })
+
+test("lists all tickets", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: ["backend"]
+        },
+        {
+            id: 2,
+            title: "Fix button",
+            description: "Button does not work",
+            status: "closed",
+            priority: "low",
+            tags: ["frontend"]
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.listTickets();
+
+    expect(result).toEqual(tickets);
+});
+
+test("filters tickets by status", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: ["backend"]
+        },
+        {
+            id: 2,
+            title: "Fix button",
+            description: "Button does not work",
+            status: "closed",
+            priority: "low",
+            tags: ["frontend"]
+        },
+        {
+            id: 3,
+            title: "Fix API",
+            description: "API returns wrong data",
+            status: "open",
+            priority: "medium",
+            tags: ["backend"]
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.listTickets({ status: "open" });
+
+    expect(result).toEqual([tickets[0], tickets[2]]);
+});
+
+test("filters tickets by priority", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: []
+        },
+        {
+            id: 2,
+            title: "Fix button",
+            description: "Button does not work",
+            status: "open",
+            priority: "low",
+            tags: []
+        },
+        {
+            id: 3,
+            title: "Fix API",
+            description: "API returns wrong data",
+            status: "closed",
+            priority: "high",
+            tags: []
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.listTickets({ priority: "high" });
+
+    expect(result).toEqual([tickets[0], tickets[2]]);
+});
+
+test("filters tickets by tag", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: ["backend", "security"]
+        },
+        {
+            id: 2,
+            title: "Fix button",
+            description: "Button does not work",
+            status: "open",
+            priority: "low",
+            tags: ["frontend"]
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.listTickets({ tag: "backend" });
+
+    expect(result).toEqual([tickets[0]]);
+});
