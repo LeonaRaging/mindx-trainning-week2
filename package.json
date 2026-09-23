@@ -1,0 +1,15 @@
+{
+  "name": "mindx-trainning-week2",
+  "version": "1.0.0",
+  "description": "Ticket Manager CLI",
+  "main": "cli.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
