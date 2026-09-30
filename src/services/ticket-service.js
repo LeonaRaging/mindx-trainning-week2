@@ -53,6 +53,26 @@ class TicketService {
 
         return ticket;
     }
+
+    updateStatus(id, status) {
+        const tickets = this.storage.load();
+
+        const ticket = tickets.find(ticket => ticket.id === id);
+
+        if (!ticket) {
+            throw new Error("Ticket not found");
+        }
+
+        if (!["open", "in_progress", "closed"].includes(status)) {
+            throw new Error("Invalid ticket status");
+        }
+
+        ticket.status = status;
+
+        this.storage.save(tickets);
+
+        return ticket;
+    }
 }
 
 module.exports = TicketService;
