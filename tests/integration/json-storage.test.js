@@ -1,9 +1,8 @@
 const fs = require("fs");
 const JsonStorage = require("../../src/storage/json-storage");
+const filePath = "data/test-tickets.json";
 
 test("loads tickets from a JSON file", () => {
-    const filePath = "data/test-tickets.json";
-
     fs.writeFileSync(
         filePath,
         JSON.stringify([
@@ -27,8 +26,6 @@ test("loads tickets from a JSON file", () => {
 });
 
 test("saves tickets to a JSON file", () => {
-    const filePath = "data/test-tickets.json";
-
     const storage = new JsonStorage(filePath);
 
     const tickets = [
@@ -52,9 +49,13 @@ test("saves tickets to a JSON file", () => {
 });
 
 test("returns an empty list when the JSON file does not exist", () => {
-    const filePath = "data/does-not-exist.json";
-
     const storage = new JsonStorage(filePath);
 
     expect(storage.load()).toEqual([]);
 });
+
+afterEach(() => {
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+    }
+})

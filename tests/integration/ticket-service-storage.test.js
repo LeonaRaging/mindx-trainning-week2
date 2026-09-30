@@ -1,9 +1,9 @@
 const fs = require("fs");
 const JsonStorage = require("../../src/storage/json-storage");
 const TicketService = require("../../src/services/ticket-service");
+const filePath = "data/integration-tickets.json";
 
 test("creates and persists a ticket", () => {
-    const filePath = "data/integration-tickets.json";
 
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -23,3 +23,9 @@ test("creates and persists a ticket", () => {
 
     expect(saved).toContainEqual(ticket);
 });
+
+afterEach(() => {
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+    }
+})
