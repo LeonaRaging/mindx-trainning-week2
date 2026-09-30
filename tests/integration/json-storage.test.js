@@ -50,3 +50,11 @@ test("saves tickets to a JSON file", () => {
 
     expect(saved).toEqual(tickets);
 });
+
+test("returns an empty list when the JSON file does not exist", () => {
+    const filePath = "data/does-not-exist.json";
+
+    const storage = new JsonStorage(filePath);
+
+    expect(storage.load()).toEqual([]);
+});
