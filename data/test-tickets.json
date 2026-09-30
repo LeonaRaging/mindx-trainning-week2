@@ -1,1 +1,12 @@
-[{"id":1,"title":"Fix login","description":"Login is broken","status":"open","priority":"high","tags":["backend"]}]
+[
+  {
+    "id": 1,
+    "title": "Fix login",
+    "description": "Login is broken",
+    "status": "open",
+    "priority": "high",
+    "tags": [
+      "backend"
+    ]
+  }
+]

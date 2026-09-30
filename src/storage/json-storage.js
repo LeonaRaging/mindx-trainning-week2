@@ -9,6 +9,13 @@ class JsonStorage {
         const data = fs.readFileSync(this.filePath, "utf-8");
         return JSON.parse(data);
     }
+
+    save(tickets) {
+        fs.writeFileSync(
+            this.filePath,
+            JSON.stringify(tickets, null, 2)
+        );
+    }
 }
 
 module.exports = JsonStorage;
