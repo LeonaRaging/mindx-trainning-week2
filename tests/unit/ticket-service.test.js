@@ -195,3 +195,47 @@ test("filters tickets by tag", () => {
 
     expect(result).toEqual([tickets[0]]);
 });
+
+test("gets a ticket by ID", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: ["backend"]
+        },
+        {
+            id: 2,
+            title: "Fix button",
+            description: "Button does not work",
+            status: "closed",
+            priority: "low",
+            tags: ["frontend"]
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.getTicket(2);
+
+    expect(result).toEqual(tickets[1]);
+});
+
+test("throws an error when ticket does not exist", () => {
+    const storage = {
+        load: () => [],
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    expect(() => service.getTicket(999))
+        .toThrow("Ticket not found");
+});
