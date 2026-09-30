@@ -239,3 +239,53 @@ test("throws an error when ticket does not exist", () => {
     expect(() => service.getTicket(999))
         .toThrow("Ticket not found");
 });
+
+test("updates a ticket status", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: []
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: (newTickets) => {
+            tickets.length = 0;
+            tickets.push(...newTickets);
+        }
+    };
+
+    const service = new TicketService(storage);
+
+    const result = service.updateStatus(1, "closed");
+
+    expect(result.status).toBe("closed");
+});
+
+test("rejects an invalid status when updating a ticket", () => {
+    const tickets = [
+        {
+            id: 1,
+            title: "Fix login",
+            description: "Login is broken",
+            status: "open",
+            priority: "high",
+            tags: []
+        }
+    ];
+
+    const storage = {
+        load: () => tickets,
+        save: () => {}
+    };
+
+    const service = new TicketService(storage);
+
+    expect(() => service.updateStatus(1, "invalid"))
+        .toThrow("Invalid ticket status");
+});

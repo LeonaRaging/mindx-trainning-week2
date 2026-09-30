@@ -41,6 +41,18 @@ class TicketService {
 
         return tickets;
     }
+
+    getTicket(id) {
+        const tickets = this.storage.load();
+
+        const ticket = tickets.find(ticket => ticket.id === id)
+
+        if (!ticket) {
+            throw new Error("Ticket not found");
+        }
+
+        return ticket;
+    }
 }
 
 module.exports = TicketService;
