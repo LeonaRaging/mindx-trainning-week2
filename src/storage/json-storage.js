@@ -6,6 +6,10 @@ class JsonStorage {
     }
 
     load() {
+        if (!fs.existsSync(this.filePath)) {
+            return [];
+        }
+
         const data = fs.readFileSync(this.filePath, "utf-8");
         return JSON.parse(data);
     }
