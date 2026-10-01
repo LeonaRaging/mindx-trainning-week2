@@ -1,87 +1,41 @@
 const JsonStorage = require("./src/storage/json-storage");
 const TicketService = require("./src/services/ticket-service");
 
-const filePath = process.env.TICKETS_FILE || "data/tickets.json"
+const {
+    createTicket,
+    listTickets,
+    showTicket,
+    updateTicket
+} = require("./src/commands/ticket-commands");
+
+const filePath = process.env.TICKETS_FILE || "data/tickets.json";
+
 const storage = new JsonStorage(filePath);
 const service = new TicketService(storage);
 
 const args = process.argv.slice(2);
 
-if (
-    args[0] === "tickets" &&
-    args[1] === "create"
-) {
-    const title = args[2];
-    const description = args[3];
-    const priority = args[4];
-    const tags = args.slice(5);
-
-    service.createTicket(
-        title,
-        description,
-        priority,
-        tags
-    );
-
-    console.log("Ticket created");
+if (args[0] !== "tickets") {
+    throw new Error("Unknown command");
 }
 
-if (
-    args[0] === "tickets" &&
-    args[1] === "list"
-) {
-    const filters = {};
+switch (args[1]) {
+    case "create":
+        createTicket(service, args);
+        break;
 
-    for (let i = 2; i < args.length; i++) {
-        if (args[i] === "--status") {
-            filters.status = args[i + 1];
-        }
+    case "list":
+        listTickets(service, args);
+        break;
 
-        if (args[i] === "--priority") {
-            filters.priority = args[i + 1];
-        }
+    case "show":
+        showTicket(service, args);
+        break;
 
-        if (args[i] === "--tag") {
-            filters.tag = args[i + 1];
-        }
-    }
+    case "update":
+        updateTicket(service, args);
+        break;
 
-    const tickets = service.listTickets(filters);
-
-    for (const ticket of tickets) {
-        console.log(`${ticket.id}: ${ticket.title}`);
-    }
-}
-
-if (
-    args[0] == "tickets" &&
-    args[1] == "show"
-) {
-    const id = Number(args[2]);
-
-    const ticket = service.getTicket(id);
-
-    console.log(`ID: ${ticket.id}`);
-    console.log(`Title: ${ticket.title}`);
-    console.log(`Description: ${ticket.description}`);
-    console.log(`Status: ${ticket.status}`);
-    console.log(`Priority: ${ticket.priority}`);
-    console.log(`Tags: ${ticket.tags.join(", ")}`);
-}
-
-if (
-    args[0] === "tickets" &&
-    args[1] === "update"
-) {
-    const id = Number(args[2]);
-
-    let status;
-
-    if (args[3] === "--status") {
-        status = args[4];
-    }
-
-    service.updateStatus(id, status);
-
-    console.log("Ticket updated");
+    default:
+        throw new Error("Unknown ticket command");
 }
