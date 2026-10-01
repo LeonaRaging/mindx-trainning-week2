@@ -19,7 +19,7 @@ class TicketService {
 
         validateTicket(ticket);
 
-        this.storage.save([ticket]);
+        this.storage.save([...tickets, ticket]);
 
         return ticket;
     }
