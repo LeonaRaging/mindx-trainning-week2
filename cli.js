@@ -68,3 +68,20 @@ if (
     console.log(`Priority: ${ticket.priority}`);
     console.log(`Tags: ${ticket.tags.join(", ")}`);
 }
+
+if (
+    args[0] === "tickets" &&
+    args[1] === "update"
+) {
+    const id = Number(args[2]);
+
+    let status;
+
+    if (args[3] === "--status") {
+        status = args[4];
+    }
+
+    service.updateStatus(id, status);
+
+    console.log("Ticket updated");
+}
