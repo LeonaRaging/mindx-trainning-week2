@@ -54,6 +54,14 @@ test("returns an empty list when the JSON file does not exist", () => {
     expect(storage.load()).toEqual([]);
 });
 
+test("throws when the JSON file is corrupted", () => {
+    fs.writeFileSync(filePath, "{not-valid-json");
+
+    const storage = new JsonStorage(filePath);
+
+    expect(() => storage.load()).toThrow(SyntaxError);
+});
+
 afterEach(() => {
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath)

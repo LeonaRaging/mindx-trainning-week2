@@ -195,6 +195,34 @@ test("updates a ticket status", () => {
     expect(tickets[0].status).toBe("closed");
 });
 
+test("throws for an unknown ticket command", () => {
+    expect(() => execFileSync(
+        "node",
+        ["cli.js", "tickets", "unknown"],
+        {
+            encoding: "utf-8",
+            env: {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
+    )).toThrow(/Unknown ticket command/);
+});
+
+test("throws for an invalid status update", () => {
+    expect(() => execFileSync(
+        "node",
+        ["cli.js", "tickets", "update", "1", "--status", "archived"],
+        {
+            encoding: "utf-8",
+            env: {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
+    )).toThrow(/Invalid ticket status/);
+});
+
 afterEach(() => {
     if (fs.existsSync(testFilePath)) {
         fs.unlinkSync(testFilePath)
