@@ -52,3 +52,19 @@ if (
         console.log(`${ticket.id}: ${ticket.title}`);
     }
 }
+
+if (
+    args[0] == "tickets" &&
+    args[1] == "show"
+) {
+    const id = Number(args[2]);
+
+    const ticket = service.getTicket(id);
+
+    console.log(`ID: ${ticket.id}`);
+    console.log(`Title: ${ticket.title}`);
+    console.log(`Description: ${ticket.description}`);
+    console.log(`Status: ${ticket.status}`);
+    console.log(`Priority: ${ticket.priority}`);
+    console.log(`Tags: ${ticket.tags.join(", ")}`);
+}
