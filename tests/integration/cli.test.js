@@ -17,3 +17,13 @@ test("creates a ticket from the CLI", () => {
 
     expect(output).toContain("Ticket created");
 });
+
+test("lists tickets through the CLI", () => {
+    const output = execFileSync(
+        "node",
+        ["cli.js", "tickets", "list"],
+        { encoding: "utf-8" }
+    );
+
+    expect(output).toContain("Fix login");
+});
