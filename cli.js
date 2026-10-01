@@ -24,3 +24,14 @@ if (
 
     console.log("Ticket created");
 }
+
+if (
+    args[0] === "tickets" &&
+    args[1] === "list"
+) {
+    const tickets = service.listTickets();
+
+    for (const ticket of tickets) {
+        console.log(`${ticket.id}: ${ticket.title}`);
+    }
+}
