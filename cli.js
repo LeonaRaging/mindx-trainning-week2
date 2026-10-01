@@ -30,7 +30,23 @@ if (
     args[0] === "tickets" &&
     args[1] === "list"
 ) {
-    const tickets = service.listTickets();
+    const filters = {};
+
+    for (let i = 2; i < args.length; i++) {
+        if (args[i] === "--status") {
+            filters.status = args[i + 1];
+        }
+
+        if (args[i] === "--priority") {
+            filters.priority = args[i + 1];
+        }
+
+        if (args[i] === "--tag") {
+            filters.tag = args[i + 1];
+        }
+    }
+
+    const tickets = service.listTickets(filters);
 
     for (const ticket of tickets) {
         console.log(`${ticket.id}: ${ticket.title}`);
