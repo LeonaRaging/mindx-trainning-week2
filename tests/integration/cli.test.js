@@ -1,11 +1,11 @@
 const fs = require("fs");
 const { execFileSync } = require("child_process");
 
-const filePath = "data/tickets.json";
+const testFilePath = "data/test-tickets.json";
 
 beforeEach(() => {
     fs.writeFileSync(
-        filePath,
+        testFilePath,
         JSON.stringify([
             {
                 id: 1,
@@ -39,7 +39,13 @@ test("creates a ticket from the CLI", () => {
             "high",
             "backend"
         ],
-        { encoding: "utf-8" }
+        { 
+            encoding: "utf-8",
+            env : {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        },
     );
 
     expect(output).toContain("Ticket created");
@@ -49,7 +55,13 @@ test("lists tickets through the CLI", () => {
     const output = execFileSync(
         "node",
         ["cli.js", "tickets", "list"],
-        { encoding: "utf-8" }
+        { 
+            encoding: "utf-8",
+            env : {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            } 
+        }
     );
 
     expect(output).toContain("Fix login");
@@ -59,7 +71,13 @@ test("lists multiple tickets through the CLI", () => {
     const output = execFileSync(
         "node",
         ["cli.js", "tickets", "list"],
-        { encoding: "utf-8" }
+        { 
+            encoding: "utf-8",
+            env : {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
     );
 
     expect(output).toContain("Fix login");
@@ -76,9 +94,21 @@ test("lists only tickets with the requested status", () => {
             "--status",
             "open"
         ],
-        { encoding: "utf-8" }
+        { 
+            encoding: "utf-8",
+            env : {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+         }
     );
 
     expect(output).toContain("Fix login");
     expect(output).not.toContain("Fix logout");
 });
+
+afterEach(() => {
+    if (fs.existsSync(testFilePath)) {
+        fs.unlinkSync(testFilePath)
+    }
+})

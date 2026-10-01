@@ -1,7 +1,8 @@
 const JsonStorage = require("./src/storage/json-storage");
 const TicketService = require("./src/services/ticket-service");
 
-const storage = new JsonStorage("data/tickets.json");
+const filePath = process.env.TICKETS_FILE || "data/tickets.json"
+const storage = new JsonStorage(filePath);
 const service = new TicketService(storage);
 
 const args = process.argv.slice(2);
