@@ -25,18 +25,18 @@ class TicketService {
     }
 
     listTickets(filters = {}) {
-        const tickets = this.storage.load();
+        let tickets = this.storage.load();
 
         if (filters.status) {
-            return tickets.filter(ticket => ticket.status === filters.status);
+            tickets = tickets.filter(ticket => ticket.status === filters.status);
         }
 
         if (filters.priority) {
-            return tickets.filter(ticket => ticket.priority === filters.priority);
+            tickets = tickets.filter(ticket => ticket.priority === filters.priority);
         }
 
         if (filters.tag) {
-            return tickets.filter(ticket => ticket.tags.includes(filters.tag));
+            tickets = tickets.filter(ticket => ticket.tags.includes(filters.tag));
         }
 
         return tickets;
