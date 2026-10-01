@@ -166,6 +166,35 @@ test("shows a ticket by ID", () => {
     expect(output).toContain("backend");
 });
 
+test("updates a ticket status", () => {
+    const output = execFileSync(
+        "node",
+        [
+            "cli.js",
+            "tickets",
+            "update",
+            "1",
+            "--status",
+            "closed"
+        ],
+        {
+            encoding: "utf-8",
+            env: {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
+    );
+
+    expect(output).toContain("Ticket updated");
+
+    const tickets = JSON.parse(
+        fs.readFileSync(testFilePath, "utf-8")
+    );
+
+    expect(tickets[0].status).toBe("closed");
+});
+
 afterEach(() => {
     if (fs.existsSync(testFilePath)) {
         fs.unlinkSync(testFilePath)
