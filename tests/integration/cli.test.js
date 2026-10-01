@@ -141,6 +141,31 @@ test("filters tickets by tag and priority", () => {
     expect(output).not.toContain("Update UI");
 });
 
+test("shows a ticket by ID", () => {
+    const output = execFileSync(
+        "node",
+        [
+            "cli.js",
+            "tickets",
+            "show",
+            "1"
+        ],
+        {
+            encoding: "utf-8",
+            env: {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
+    );
+
+    expect(output).toContain("Fix login");
+    expect(output).toContain("Users cannot log in");
+    expect(output).toContain("open");
+    expect(output).toContain("high");
+    expect(output).toContain("backend");
+});
+
 afterEach(() => {
     if (fs.existsSync(testFilePath)) {
         fs.unlinkSync(testFilePath)
