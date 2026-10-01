@@ -22,6 +22,14 @@ beforeEach(() => {
                 status: "closed",
                 priority: "medium",
                 tags: ["backend"]
+            },
+            {
+                id: 3,
+                title: "Update UI",
+                description: "change UI",
+                status: "open",
+                priority: "high",
+                tags: ["frontend"]
             }
         ])
     );
@@ -105,6 +113,32 @@ test("lists only tickets with the requested status", () => {
 
     expect(output).toContain("Fix login");
     expect(output).not.toContain("Fix logout");
+});
+
+test("filters tickets by tag and priority", () => {
+    const output = execFileSync(
+        "node",
+        [
+            "cli.js",
+            "tickets",
+            "list",
+            "--tag",
+            "backend",
+            "--priority",
+            "high"
+        ],
+        {
+            encoding: "utf-8",
+            env: {
+                ...process.env,
+                TICKETS_FILE: testFilePath
+            }
+        }
+    );
+
+    expect(output).toContain("Fix login");
+    expect(output).not.toContain("Fix logout");
+    expect(output).not.toContain("Update UI");
 });
 
 afterEach(() => {
