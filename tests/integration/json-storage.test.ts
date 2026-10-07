@@ -1,5 +1,6 @@
 export {};
 
+import { Ticket } from "../../src/models/ticket";
 import JsonStorage from "../../src/storage/json-storage";
 
 const fs = require("fs");
@@ -31,7 +32,7 @@ test("loads tickets from a JSON file", () => {
 test("saves tickets to a JSON file", () => {
     const storage = new JsonStorage(filePath);
 
-    const tickets = [
+    const tickets: Ticket[] = [
         {
             id: 1,
             title: "Fix login",
