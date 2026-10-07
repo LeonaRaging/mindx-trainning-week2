@@ -1,4 +1,8 @@
-function createTicket(service, args) {
+import type TicketService from "../services/ticket-service";
+import type { TicketFilters } from "../services/ticket-service";
+import type { TicketPriority, TicketStatus } from "../models/ticket";
+
+export function createTicket(service: TicketService, args: string[]): void {
     const title = args[2];
     const description = args[3];
     const priority = args[4];
@@ -7,27 +11,36 @@ function createTicket(service, args) {
     service.createTicket(
         title,
         description,
-        priority,
+        priority as TicketPriority,
         tags
     );
 
     console.log("Ticket created");
 }
 
-function listTickets(service, args) {
-    const filters = {};
+export function listTickets(service: TicketService, args: string[]): void {
+    const filters: TicketFilters = {};
 
     for (let i = 2; i < args.length; i++) {
         if (args[i] === "--status") {
-            filters.status = args[i + 1];
+            const status = args[i + 1];
+            if (status) {
+                filters.status = status as TicketStatus;
+            }
         }
 
         if (args[i] === "--priority") {
-            filters.priority = args[i + 1];
+            const priority = args[i + 1];
+            if (priority) {
+                filters.priority = priority as TicketPriority;
+            }
         }
 
         if (args[i] === "--tag") {
-            filters.tag = args[i + 1];
+            const tag = args[i + 1];
+            if (tag) {
+                filters.tag = tag;
+            }
         }
     }
 
@@ -38,7 +51,7 @@ function listTickets(service, args) {
     }
 }
 
-function showTicket(service, args) {
+export function showTicket(service: TicketService, args: string[]): void {
     const id = Number(args[2]);
     const ticket = service.getTicket(id);
 
@@ -50,23 +63,16 @@ function showTicket(service, args) {
     console.log(`Tags: ${ticket.tags.join(", ")}`);
 }
 
-function updateTicket(service, args) {
+export function updateTicket(service: TicketService, args: string[]): void {
     const id = Number(args[2]);
 
-    let status;
+    let status: TicketStatus | undefined;
 
     if (args[3] === "--status") {
-        status = args[4];
+        status = args[4] as TicketStatus;
     }
 
     service.updateStatus(id, status);
 
     console.log("Ticket updated");
 }
-
-module.exports = {
-    createTicket,
-    listTickets,
-    showTicket,
-    updateTicket
-};

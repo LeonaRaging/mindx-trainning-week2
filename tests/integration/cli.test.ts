@@ -1,3 +1,5 @@
+export {};
+
 const fs = require("fs");
 const { execFileSync } = require("child_process");
 
@@ -39,7 +41,7 @@ test("creates a ticket from the CLI", () => {
     const output = execFileSync(
         "node",
         [
-            "cli.js",
+            "dist/cli.js",
             "tickets",
             "create",
             "Fix login",
@@ -62,7 +64,7 @@ test("creates a ticket from the CLI", () => {
 test("lists tickets through the CLI", () => {
     const output = execFileSync(
         "node",
-        ["cli.js", "tickets", "list"],
+        ["dist/cli.js", "tickets", "list"],
         { 
             encoding: "utf-8",
             env : {
@@ -78,7 +80,7 @@ test("lists tickets through the CLI", () => {
 test("lists multiple tickets through the CLI", () => {
     const output = execFileSync(
         "node",
-        ["cli.js", "tickets", "list"],
+        ["dist/cli.js", "tickets", "list"],
         { 
             encoding: "utf-8",
             env : {
@@ -96,7 +98,7 @@ test("lists only tickets with the requested status", () => {
     const output = execFileSync(
         "node",
         [
-            "cli.js",
+            "dist/cli.js",
             "tickets",
             "list",
             "--status",
@@ -119,7 +121,7 @@ test("filters tickets by tag and priority", () => {
     const output = execFileSync(
         "node",
         [
-            "cli.js",
+            "dist/cli.js",
             "tickets",
             "list",
             "--tag",
@@ -145,7 +147,7 @@ test("shows a ticket by ID", () => {
     const output = execFileSync(
         "node",
         [
-            "cli.js",
+            "dist/cli.js",
             "tickets",
             "show",
             "1"
@@ -170,7 +172,7 @@ test("updates a ticket status", () => {
     const output = execFileSync(
         "node",
         [
-            "cli.js",
+            "dist/cli.js",
             "tickets",
             "update",
             "1",
@@ -198,7 +200,7 @@ test("updates a ticket status", () => {
 test("throws for an unknown ticket command", () => {
     expect(() => execFileSync(
         "node",
-        ["cli.js", "tickets", "unknown"],
+        ["dist/cli.js", "tickets", "unknown"],
         {
             encoding: "utf-8",
             env: {
@@ -212,7 +214,7 @@ test("throws for an unknown ticket command", () => {
 test("throws for an invalid status update", () => {
     expect(() => execFileSync(
         "node",
-        ["cli.js", "tickets", "update", "1", "--status", "archived"],
+        [        "dist/cli.js", "tickets", "update", "1", "--status", "archived"],
         {
             encoding: "utf-8",
             env: {

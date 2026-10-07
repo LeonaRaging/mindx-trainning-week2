@@ -34,13 +34,13 @@ The application validates the following:
 ### Supported commands
 
 ```bash
-node cli.js tickets create "<title>" "<description>" "<priority>" "<tag1>" "<tag2>"
-node cli.js tickets list
-node cli.js tickets list --status <status>
-node cli.js tickets list --priority <priority>
-node cli.js tickets list --tag <tag>
-node cli.js tickets show <ticket_id>
-node cli.js tickets update <ticket_id> --status <status>
+npm start -- tickets create "<title>" "<description>" "<priority>" "<tag1>" "<tag2>"
+npm start -- tickets list
+npm start -- tickets list --status <status>
+npm start -- tickets list --priority <priority>
+npm start -- tickets list --tag <tag>
+npm start -- tickets show <ticket_id>
+npm start -- tickets update <ticket_id> --status <status>
 ```
 
 ## Installation
@@ -57,13 +57,13 @@ npm install
 ### Create a ticket
 
 ```bash
-node cli.js tickets create "<title>" "<description>" "<priority>" "<tag1>" "<tag2>"
+npm start -- tickets create "<title>" "<description>" "<priority>" "<tag1>" "<tag2>"
 ```
 
 Example:
 
 ```bash
-node cli.js tickets create "Fix login bug" "Users cannot log in" high backend
+npm start -- tickets create "Fix login bug" "Users cannot log in" high backend
 ```
 
 This creates a ticket with a default status of `open` and stores the provided priority and tags.
@@ -71,27 +71,27 @@ This creates a ticket with a default status of `open` and stores the provided pr
 ### List tickets
 
 ```bash
-node cli.js tickets list
+npm start -- tickets list
 ```
 
 Optional filters:
 
 ```bash
-node cli.js tickets list --status <status>
-node cli.js tickets list --priority <priority>
-node cli.js tickets list --tag <tag>
+npm start -- tickets list --status <status>
+npm start -- tickets list --priority <priority>
+npm start -- tickets list --tag <tag>
 ```
 
 You can also combine filters:
 
 ```bash
-node cli.js tickets list --tag <tag> --priority <priority>
+npm start -- tickets list --tag <tag> --priority <priority>
 ```
 
 ### Show a ticket
 
 ```bash
-node cli.js tickets show <ticket_id>
+npm start -- tickets show <ticket_id>
 ```
 
 This prints all ticket details, including ID, title, description, status, priority, and tags.
@@ -99,7 +99,7 @@ This prints all ticket details, including ID, title, description, status, priori
 ### Update a ticket status
 
 ```bash
-node cli.js tickets update <ticket_id> --status <status>
+npm start -- tickets update <ticket_id> --status <status>
 ```
 
 Valid status values are:
@@ -113,38 +113,38 @@ Valid status values are:
 By default, ticket data is stored in:
 
 ```bash
-data/tickets.json
+data/tickets.tson
 ```
 
 You can override the storage file path with the `TICKETS_FILE` environment variable:
 
 ```bash
-TICKETS_FILE=data/custom-tickets.json node cli.js tickets list
+TICKETS_FILE=data/custom-tickets.json npm start -- tickets list
 ```
 
 ## Project structure
 
 ```text
 .
-├── cli.js
-├── package.json
+├── cli.ts
+├── package.tson
 ├── overview.md
 ├── data/
-│   └── tickets.json
+│   └── tickets.tson
 ├── src/
 │   ├── commands/
-│   │   └── ticket-commands.js
+│   │   └── ticket-commands.ts
 │   ├── models/
-│   │   └── ticket.js
+│   │   └── ticket.ts
 │   ├── services/
-│   │   └── ticket-service.js
+│   │   └── ticket-service.ts
 │   └── storage/
-│       └── json-storage.js
+│       └── json-storage.ts
 ├── tests/
 │   ├── integration/
-│   │   └── cli.test.js
+│   │   └── cli.test.ts
 │   └── unit/
-│       └── ticket-service.test.js
+│       └── ticket-service.test.ts
 └── README.md
 ```
 

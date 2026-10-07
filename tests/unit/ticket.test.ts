@@ -1,3 +1,5 @@
+export {};
+
 const { validateTicket } = require("../../src/models/ticket");
 
 describe("Ticket validation", () => {

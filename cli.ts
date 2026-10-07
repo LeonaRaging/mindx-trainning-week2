@@ -1,12 +1,12 @@
-const JsonStorage = require("./src/storage/json-storage");
-const TicketService = require("./src/services/ticket-service");
+import JsonStorage from "./src/storage/json-storage";
+import TicketService from "./src/services/ticket-service";
 
-const {
+import {
     createTicket,
     listTickets,
     showTicket,
     updateTicket
-} = require("./src/commands/ticket-commands");
+} from "./src/commands/ticket-commands";
 
 const filePath = process.env.TICKETS_FILE || "data/tickets.json";
 

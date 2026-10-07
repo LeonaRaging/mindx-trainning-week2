@@ -1,4 +1,8 @@
-const TicketService = require("../../src/services/ticket-service");
+import type { Ticket } from "../../src/models/ticket";
+
+export {};
+
+import TicketService from "../../src/services/ticket-service";
 
 test("creates a ticket", () => {
     const storage = {
@@ -23,11 +27,11 @@ test("creates a ticket", () => {
 })
 
 test("generates a unique ID for each ticket", () => {
-    const tickets = [];
+    const tickets: Ticket[] = [];
 
     const storage = {
         load: jest.fn(() => tickets),
-        save: jest.fn((newTickets) => {
+        save: jest.fn((newTickets: Ticket[]) => {
             tickets.length = 0;
             tickets.push(...newTickets);
         })
@@ -53,7 +57,7 @@ test("generates a unique ID for each ticket", () => {
 })
 
 test("lists all tickets", () => {
-    const tickets = [
+    const tickets: Ticket[] = [
         {
             id: 1,
             title: "Fix login",
@@ -241,7 +245,7 @@ test("throws an error when ticket does not exist", () => {
 });
 
 test("updates a ticket status", () => {
-    const tickets = [
+    const tickets: Ticket[] = [
         {
             id: 1,
             title: "Fix login",
@@ -254,7 +258,7 @@ test("updates a ticket status", () => {
 
     const storage = {
         load: () => tickets,
-        save: (newTickets) => {
+        save: (newTickets: Ticket[]) => {
             tickets.length = 0;
             tickets.push(...newTickets);
         }

@@ -1,21 +1,36 @@
-const { validateTicket } = require("../models/ticket")
+import {
+    Ticket,
+    TicketPriority,
+    TicketStatus,
+    validateTicket
+} from "../models/ticket";
+import type { Storage } from "../storage/json-storage";
 
-class TicketService {
-    constructor(storage) {
-        this.storage = storage;
-    }
+export interface TicketFilters {
+    status?: TicketStatus;
+    priority?: TicketPriority;
+    tag?: string;
+}
 
-    createTicket(title, description, priority, tags) {
+export default class TicketService {
+    constructor(private readonly storage: Storage) {}
+
+    createTicket(
+        title: string,
+        description: string,
+        priority: TicketPriority,
+        tags: string[]
+    ): Ticket {
         const tickets = this.storage.load();
 
-        const ticket = {
+        const ticket: Ticket = {
             id: tickets.length + 1,
             title,
             description,
             status: "open",
             priority,
             tags
-        }
+        };
 
         validateTicket(ticket);
 
@@ -24,7 +39,7 @@ class TicketService {
         return ticket;
     }
 
-    listTickets(filters = {}) {
+    listTickets(filters: TicketFilters = {}): Ticket[] {
         let tickets = this.storage.load();
 
         if (filters.status) {
@@ -36,13 +51,14 @@ class TicketService {
         }
 
         if (filters.tag) {
-            tickets = tickets.filter(ticket => ticket.tags.includes(filters.tag));
+            const tag = filters.tag;
+            tickets = tickets.filter(ticket => ticket.tags.includes(tag));
         }
 
         return tickets;
     }
 
-    getTicket(id) {
+    getTicket(id: number): Ticket {
         const tickets = this.storage.load();
 
         const ticket = tickets.find(ticket => ticket.id === id)
@@ -54,7 +70,7 @@ class TicketService {
         return ticket;
     }
 
-    updateStatus(id, status) {
+    updateStatus(id: number, status: TicketStatus | undefined): Ticket {
         const tickets = this.storage.load();
 
         const ticket = tickets.find(ticket => ticket.id === id);
@@ -63,7 +79,11 @@ class TicketService {
             throw new Error("Ticket not found");
         }
 
-        if (!["open", "in_progress", "closed"].includes(status)) {
+        if (
+            status !== "open" &&
+            status !== "in_progress" &&
+            status !== "closed"
+        ) {
             throw new Error("Invalid ticket status");
         }
 
@@ -74,5 +94,3 @@ class TicketService {
         return ticket;
     }
 }
-
-module.exports = TicketService;

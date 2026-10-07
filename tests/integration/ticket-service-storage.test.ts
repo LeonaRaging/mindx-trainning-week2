@@ -1,6 +1,9 @@
+export {};
+
+import JsonStorage from "../../src/storage/json-storage";
+import TicketService from "../../src/services/ticket-service";
+
 const fs = require("fs");
-const JsonStorage = require("../../src/storage/json-storage");
-const TicketService = require("../../src/services/ticket-service");
 const filePath = "data/integration-tickets.json";
 
 test("creates and persists a ticket", () => {

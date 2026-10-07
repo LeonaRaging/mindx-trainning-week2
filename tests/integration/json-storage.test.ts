@@ -1,5 +1,8 @@
+export {};
+
+import JsonStorage from "../../src/storage/json-storage";
+
 const fs = require("fs");
-const JsonStorage = require("../../src/storage/json-storage");
 const filePath = "data/test-tickets.json";
 
 test("loads tickets from a JSON file", () => {
