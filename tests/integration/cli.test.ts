@@ -1,7 +1,7 @@
 export {};
 
-const fs = require("fs");
-const { execFileSync } = require("child_process");
+import fs from "fs";
+import { execFileSync } from "child_process"
 
 const testFilePath = "data/test-tickets.json";
 
