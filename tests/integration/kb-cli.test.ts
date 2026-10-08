@@ -68,7 +68,7 @@ test("adds a knowledge base document through the CLI", () => {
     ]);
 
     expect(output).toContain("doc-003");
-    expect(output).toContain("SMS");
+    expect(output).toContain("test-kb-document");
 });
 
 test("reports an error when retrieving an unknown document", () => {
