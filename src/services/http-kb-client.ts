@@ -1,7 +1,7 @@
 import type { Document } from "../models/document";
 import type { KBClient } from "./kb-client";
 
-type FetchImplementation = (
+export type FetchImplementation = (
     input: string | URL,
     init?: RequestInit
 ) => Promise<Response>;

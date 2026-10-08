@@ -1,6 +1,6 @@
 import JsonStorage from "./src/storage/json-storage";
 import TicketService from "./src/services/ticket-service";
-import MockKBClient from "./src/services/mock-kb-client";
+import createKBClient from "./src/services/create-kb-client";
 
 import {
     createTicket,
@@ -19,7 +19,6 @@ const filePath = process.env.TICKETS_FILE || "data/tickets.json";
 
 const storage = new JsonStorage(filePath);
 const service = new TicketService(storage);
-const kbClient = new MockKBClient();
 
 const args = process.argv.slice(2);
 
@@ -48,6 +47,8 @@ async function main(): Promise<void> {
     }
 
     if (args[0] === "kb") {
+        const kbClient = createKBClient();
+
         switch (args[1]) {
             case "search":
                 await searchKnowledgeBase(kbClient, args.slice(2));
