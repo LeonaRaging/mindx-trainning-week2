@@ -1,6 +1,6 @@
-# Ticket Manager CLI
+# Ticket and Knowledge Base CLI
 
-A small command-line application for managing tickets stored in a local JSON file. The project was built as a TDD exercise to practice test-first development, CLI command design, and separation of responsibilities across command, service, model, and storage layers.
+A small command-line application for managing tickets stored in a local JSON file and querying a Knowledge Base over a simple HTTP API. The project was built as a TDD exercise to practice test-first development, CLI command design, and separation of responsibilities across command, service, model, and storage layers.
 
 ## Overview
 
@@ -11,6 +11,7 @@ This project lets you:
 - View a single ticket by ID
 - Update a ticket's status
 - Persist ticket data to a JSON file locally
+- Search, list, retrieve, and add Knowledge Base documents
 
 It follows a simple architecture:
 
@@ -18,6 +19,10 @@ It follows a simple architecture:
 - `src/services/` contains the ticket business logic
 - `src/models/` contains validation rules
 - `src/storage/` handles JSON read/write operations
+- `src/services/kb-client.ts` defines the Knowledge Base client contract
+- `src/services/mock-kb-client.ts` provides safe local Knowledge Base data
+- `src/services/http-kb-client.ts` connects to a real Knowledge Base API
+- `src/services/create-kb-client.ts` selects the client from environment variables
 
 ## Features
 
@@ -41,6 +46,15 @@ npm start -- tickets list --priority <priority>
 npm start -- tickets list --tag <tag>
 npm start -- tickets show <ticket_id>
 npm start -- tickets update <ticket_id> --status <status>
+```
+
+Knowledge Base commands:
+
+```bash
+npm start -- kb search "<query>" --top-k <number>
+npm start -- kb list --node <node_path> --limit <number>
+npm start -- kb retrieve <document_id>
+npm start -- kb add --file <file> --path <node_path> --tags <tag1,tag2>
 ```
 
 ## Installation
@@ -108,6 +122,81 @@ Valid status values are:
 - `in_progress`
 - `closed`
 
+### Search Knowledge Base documents
+
+The default client is the local mock client, so this command does not require a
+running server:
+
+```bash
+KB_CLIENT=mock npm start -- kb search response --top-k 3
+```
+
+### List documents in a node
+
+```bash
+KB_CLIENT=mock npm start -- kb list \
+  --node /templates/email \
+  --limit 10
+```
+
+### Retrieve a document
+
+```bash
+KB_CLIENT=mock npm start -- kb retrieve doc-001
+```
+
+### Add a document
+
+The file contents become the document content. The filename without its
+extension becomes the document title.
+
+```bash
+printf 'A short SMS response.' > /tmp/new-template.md
+
+KB_CLIENT=mock npm start -- kb add \
+  --file /tmp/new-template.md \
+  --path /templates/sms \
+  --tags template,sms
+```
+
+## Knowledge Base client configuration
+
+The CLI supports two Knowledge Base clients:
+
+| `KB_CLIENT` | Description |
+| --- | --- |
+| `mock` or unset | Uses in-memory documents for local development and tests |
+| `http` | Sends requests to the configured Knowledge Base API |
+
+Use the mock client by default:
+
+```bash
+npm start -- kb search response
+```
+
+Use the HTTP client by setting both environment variables:
+
+```bash
+KB_CLIENT=http \
+KB_API_URL=http://localhost:3000 \
+npm start -- kb search response --top-k 3
+```
+
+`KB_API_URL` is required when `KB_CLIENT=http`. The HTTP client sends JSON
+`POST` requests to these endpoints:
+
+| Command | Endpoint | Request body |
+| --- | --- | --- |
+| `kb search` | `/search` | `{ "query": "...", "topK": 5 }` |
+| `kb list` | `/list` | `{ "nodePath": "...", "limit": 10 }` |
+| `kb retrieve` | `/retrieve` | `{ "docId": "doc-001" }` |
+| `kb add` | `/add` | `{ "title": "...", "content": "...", "nodePath": "...", "tags": ["..."] }` |
+
+Search and list responses must contain a `results` array of complete document
+objects. Retrieve and add responses may contain a document directly or under
+a `document` property. Failed HTTP requests, network errors, invalid JSON, and
+malformed responses are reported to the CLI.
+
 ## Data storage
 
 By default, ticket data is stored in:
@@ -133,10 +222,16 @@ TICKETS_FILE=data/custom-tickets.json npm start -- tickets list
 │   └── tickets.tson
 ├── src/
 │   ├── commands/
+│   │   ├── kb-commands.ts
 │   │   └── ticket-commands.ts
 │   ├── models/
+│   │   ├── document.ts
 │   │   └── ticket.ts
 │   ├── services/
+│   │   ├── create-kb-client.ts
+│   │   ├── http-kb-client.ts
+│   │   ├── kb-client.ts
+│   │   ├── mock-kb-client.ts
 │   │   └── ticket-service.ts
 │   └── storage/
 │       └── json-storage.ts
@@ -167,6 +262,16 @@ The tests cover:
 - invalid ticket data
 - invalid status updates
 - CLI command behavior
+- mock Knowledge Base search, list, retrieve, and add operations
+- HTTP Knowledge Base requests and response validation
+- Knowledge Base client selection from environment variables
+
+Run the build and full test suite with:
+
+```bash
+npm run build
+npm test
+```
 
 ## TDD workflow
 
