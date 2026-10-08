@@ -197,6 +197,46 @@ objects. Retrieve and add responses may contain a document directly or under
 a `document` property. Failed HTTP requests, network errors, invalid JSON, and
 malformed responses are reported to the CLI.
 
+### Run the local HTTP Knowledge Base server
+
+The repository includes a small HTTP server for testing the complete CLI-to-API
+flow without requiring an external service. Start it in one terminal:
+
+```bash
+node kb-server.js
+```
+
+The server listens on `http://localhost:3000`. In a second terminal, run the
+CLI with the HTTP client:
+
+```bash
+KB_CLIENT=http \
+KB_API_URL=http://localhost:3000 \
+npm start -- kb search response --top-k 3
+```
+
+You can test all four HTTP operations:
+
+```bash
+KB_CLIENT=http KB_API_URL=http://localhost:3000 \
+npm start -- kb list --node /templates/email --limit 10
+
+KB_CLIENT=http KB_API_URL=http://localhost:3000 \
+npm start -- kb retrieve doc-001
+
+printf 'A short SMS response.' > /tmp/new-template.md
+
+KB_CLIENT=http KB_API_URL=http://localhost:3000 \
+npm start -- kb add \
+  --file /tmp/new-template.md \
+  --path /templates/sms \
+  --tags template,sms
+```
+
+The sample server stores documents in memory, so documents added through
+`kb add` are lost when the server is stopped or restarted. It is intended for
+local integration testing and training, not production use.
+
 ## Data storage
 
 By default, ticket data is stored in:
@@ -216,7 +256,8 @@ TICKETS_FILE=data/custom-tickets.json npm start -- tickets list
 ```text
 .
 ├── cli.ts
-├── package.tson
+├── kb-server.js
+├── package.json
 ├── overview.md
 ├── data/
 │   └── tickets.tson
@@ -237,7 +278,9 @@ TICKETS_FILE=data/custom-tickets.json npm start -- tickets list
 │       └── json-storage.ts
 ├── tests/
 │   ├── integration/
-│   │   └── cli.test.ts
+│   │   ├── cli.test.ts
+│   │   ├── http-kb-cli.test.ts
+│   │   └── kb-cli.test.ts
 │   └── unit/
 │       └── ticket-service.test.ts
 └── README.md
@@ -265,6 +308,7 @@ The tests cover:
 - mock Knowledge Base search, list, retrieve, and add operations
 - HTTP Knowledge Base requests and response validation
 - Knowledge Base client selection from environment variables
+- End-to-end HTTP CLI commands against the local `kb-server.js`
 
 Run the build and full test suite with:
 
